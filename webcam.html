@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera Snapshot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+        }
+        #camera-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #webcam-feed {
+            max-width: 100%;
+            border: 2px solid #333;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        #snapshot-button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        #snapshot-button:hover {
+            background-color: #555;
+        }
+        #snapshot-canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Camera Snapshot</h1>
+    <div id="camera-container">
+        <video id="webcam-feed" autoplay></video>
+        <button id="snapshot-button">Take Snapshot</button>
+        <canvas id="snapshot-canvas" width="640" height="480"></canvas>
+    </div>
+
+    <script>
+        let videoStream;
+        const videoElement = document.getElementById('webcam-feed');
+        const snapshotButton = document.getElementById('snapshot-button');
+        const snapshotCanvas = document.getElementById('snapshot-canvas');
+        const ctx = snapshotCanvas.getContext('2d');
+
+        // Function to start the webcam feed
+        async function startWebcam() {
+            try {
+                const constraints = { video: true };
+                videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+                videoElement.srcObject = videoStream;
+            } catch (error) {
+                console.error('Error accessing the webcam:', error);
+            }
+        }
+
+        // Function to capture a snapshot from the webcam feed
+        function takeSnapshot() {
+            if (videoStream) {
+                snapshotCanvas.style.display = 'block';
+                ctx.drawImage(videoElement, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
+            }
+        }
+
+        // Event listener for the "Take Snapshot" button
+        snapshotButton.addEventListener('click', takeSnapshot);
+
+        // Call the function to start the webcam feed
+        startWebcam();
+    </script>
+</body>
+</html>
